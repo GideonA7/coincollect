@@ -333,9 +333,7 @@
     "player": {
       "__id__": 9
     },
-    "audioManager": {
-      "__id__": 44
-    },
+    "audioManager": null,
     "initialTime": 30,
     "_id": "9aGq06yXFIhqL7Fnp+3vex"
   },
@@ -1858,7 +1856,7 @@
     "audioSource": {
       "__id__": 46
     },
-    "_id": "64yi391G1CbKqhnqIFr8W9"
+    "_id": "a3kQgX2QhPWZVYDrpA0QjQ"
   },
   {
     "__type__": "cc.UITransform",

@@ -1,7 +1,7 @@
 import { _decorator, Button, Component, instantiate, Label, Node, Prefab, Tween, tween, UITransform, Vec3 } from 'cc';
 import { Coin } from './Coin';
 import { PlayerController } from './PlayerController';
-import { AudioController } from './AudioController';
+import { AudioManager } from './AudioManager';
 const { ccclass, property } = _decorator;
 
 @ccclass('GameManager')
@@ -33,8 +33,8 @@ export class GameManager extends Component {
     @property(Node)
     player: Node = null;
 
-    @property(Node)
-    audioManager: Node = null;
+    @property(AudioManager)
+    audioManager: AudioManager = null;
 
     private score = 0;   // 记录分数
     private historyScore = 0;   // 保存历史最高分
@@ -123,8 +123,8 @@ export class GameManager extends Component {
         if (this.isGameOver) return;   // 游戏结束后就不再收集金币了
         this.score += coin.getScore();
         Tween.stopAllByTarget(coin);   // 停止金币动画
-        const audio = this.audioManager.getComponent(AudioController);
-        audio.playCollect();   // 播放收集音效
+        this.audioManager.playCollect();
+        // audio.playCollect();   // 播放收集音效
         this.createCoin();   // 收集一个就再随机刷新一个金币，让场上永远有金币在
         this.updateView();
     };
@@ -162,7 +162,7 @@ export class GameManager extends Component {
     private startGame() {
         this.score = 0;
         this.time = this.initialTime;
-        this.playerController.canMove();
+        this.playerController.setupEventListeners();
         this.gameOverNode.active = false;
         this.player.setPosition(0, 0, 0);
         this.isGameOver = false;
@@ -176,7 +176,7 @@ export class GameManager extends Component {
      * 时间到，游戏结束：玩家停止移动 + 显示本局得分 + 重新开始按钮
      */
     private gameOver() {
-        this.playerController.stopMove();   // 设置玩家不可移动
+        this.playerController.cleanupEventListeners();   // 设置玩家不可移动
         this.gameOverLabel.string = `本局最终得分：${this.score}`;
         this.gameOverNode.active = true;
 

@@ -26,7 +26,7 @@ export class PlayerController extends Component {
     private collider: Collider2D = null;
 
     protected onEnable(): void {
-        this.canMove();   // 绑定按键监听
+        this.setupEventListeners();   // 绑定按键监听
 
         this.moveLimit();   // 组件启用时就先计算好角色可移动的坐标范围
 
@@ -35,7 +35,7 @@ export class PlayerController extends Component {
     }
 
     protected onDisable(): void {
-        this.stopMove();   // 取消监听按键
+        this.cleanupEventListeners();   // 取消监听按键
 
         this.collider.off(Contact2DType.BEGIN_CONTACT, this.onBeginContact, this);   // 取消监听碰撞
     }
@@ -85,7 +85,7 @@ export class PlayerController extends Component {
     /**
      * 启用键盘监听
      */
-    canMove() {
+    setupEventListeners() {
         // 绑定键盘输入
         input.on(Input.EventType.KEY_DOWN, this.onKeyDown, this);
         input.on(Input.EventType.KEY_UP, this.onKeyUp, this);
@@ -94,7 +94,7 @@ export class PlayerController extends Component {
     /**
      * 取消键盘监听
      */
-    stopMove() {
+    cleanupEventListeners() {
         // 取消键盘监听
         input.off(Input.EventType.KEY_DOWN, this.onKeyDown, this);
         input.off(Input.EventType.KEY_UP, this.onKeyUp, this);
