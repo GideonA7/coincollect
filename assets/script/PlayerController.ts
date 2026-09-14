@@ -26,18 +26,15 @@ export class PlayerController extends Component {
     private collider: Collider2D = null;
 
     protected onEnable(): void {
-        this.setupEventListeners();   // 绑定按键监听
+        // this.setupEventListeners();   // 绑定按键和碰撞监听
 
         this.moveLimit();   // 组件启用时就先计算好角色可移动的坐标范围
-
-        this.collider = this.node.getComponent(Collider2D);
-        this.collider.on(Contact2DType.BEGIN_CONTACT, this.onBeginContact, this);   // 监听碰撞体的回调函数
+   
     }
 
     protected onDisable(): void {
-        this.cleanupEventListeners();   // 取消监听按键
-
-        this.collider.off(Contact2DType.BEGIN_CONTACT, this.onBeginContact, this);   // 取消监听碰撞
+        this.cleanupEventListeners();   // 取消监听按键和碰撞
+ 
     }
 
     private onBeginContact(selfCollider: Collider2D, otherCollider: Collider2D, contact: IPhysics2DContact | null) {
@@ -83,16 +80,19 @@ export class PlayerController extends Component {
     }
 
     /**
-     * 启用键盘监听
+     * 启用 键盘 + 碰撞 监听
      */
     setupEventListeners() {
         // 绑定键盘输入
         input.on(Input.EventType.KEY_DOWN, this.onKeyDown, this);
         input.on(Input.EventType.KEY_UP, this.onKeyUp, this);
+
+        this.collider = this.node.getComponent(Collider2D);
+        this.collider.on(Contact2DType.BEGIN_CONTACT, this.onBeginContact, this);   // 监听碰撞体的回调函数
     }
 
     /**
-     * 取消键盘监听
+     * 取消 键盘 + 碰撞 监听
      */
     cleanupEventListeners() {
         // 取消键盘监听
@@ -104,6 +104,10 @@ export class PlayerController extends Component {
         this.isPressA = false;
         this.isPressS = false;
         this.isPressD = false;
+
+        if (this.collider) {
+            this.collider.off(Contact2DType.BEGIN_CONTACT, this.onBeginContact, this);   // 取消监听碰撞
+        }
     }
 
     /**
